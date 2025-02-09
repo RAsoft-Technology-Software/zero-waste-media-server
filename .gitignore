@@ -1,0 +1,39 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+package-lock.json
+
+# Logs
+logs
+*.log
+logs/*.log
+
+# Environment variables
+.env
+.env.development
+.env.production
+.env.test
+.env.local
+
+# Build directories
+build/
+dist/
+
+# Cache directories
+.cache/
+.next/
+out/
+
+# MacOS
+.DS_Store
+
+# Editor directories and files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
