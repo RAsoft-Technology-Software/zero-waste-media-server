@@ -53,7 +53,12 @@ export const resizeAndSave = async (file: Express.Multer.File) => {
     };
 
   } catch (error) {
-    logger.error(`Error resizing and saving file: ${error.message}`);
+    if (error instanceof Error) {
+      logger.error(`Error resizing and saving file: ${error.message}`);
+    } else {
+      logger.error('Unknown error occurred during file processing');
+    }
     throw new Error('Error processing file');
   }
+  
 };
