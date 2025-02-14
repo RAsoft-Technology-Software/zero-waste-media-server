@@ -33,7 +33,13 @@ const limiter = rateLimit({
 app.use(limiter);
 app.use(express.json({ limit: bodyLimit }));
 app.use(express.urlencoded({ extended: true, limit: bodyLimit }));
-app.use(cors({ origin }));
+// app.use(cors({ origin }));
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Authorization', 'Content-Type']
+  }));
+  
 app.use(helmet());
 
 // Routes
