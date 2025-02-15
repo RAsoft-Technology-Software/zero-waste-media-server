@@ -17,8 +17,8 @@ const origin = process.env.ORIGIN?.split(',') || '*';
 
 // Rate Limiter
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests
+    windowMs: 1 * 60 * 1000, // 15 minutes
+    max: 1000, // Limit each IP to 100 requests
     message: "Too many requests from this IP, please try again later.",
     handler: (req, res, next, options) => {
         logger.warn(`Rate limit exceeded for IP: ${req.ip}`);
