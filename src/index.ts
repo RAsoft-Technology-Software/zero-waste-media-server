@@ -16,7 +16,7 @@ const bodyLimit = process.env.MAX_FILE_SIZE || '25mb';
 const origin = process.env.ORIGIN?.split(',') || '*';
 
 // Rate Limiter
-const limiter = rateLimit({
+/*const limiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 15 minutes
     max: 1000, // Limit each IP to 100 requests
     message: "Too many requests from this IP, please try again later.",
@@ -27,10 +27,10 @@ const limiter = rateLimit({
             status: 'fail'
         });
     }
-});
+});*/
 
 // Middleware
-app.use(limiter);
+// app.use(limiter);
 app.use(express.json({ limit: bodyLimit }));
 app.use(express.urlencoded({ extended: true, limit: bodyLimit }));
 // app.use(cors({ origin }));
