@@ -36,7 +36,7 @@ export const uploadMultipleFiles = asyncHandler(async (req: Request, res: Respon
   
 
 // Get media file by hash
-export const getMediaFile = asyncHandler(async (req: Request, res: Response) => {
+export const getMediaFile = asyncHandler(async (req: Request, res: Response): Promise<void> => {
     const { hash } = req.params;
     const filePath = decryptData(hash);
 
@@ -45,13 +45,15 @@ export const getMediaFile = asyncHandler(async (req: Request, res: Response) => 
     if (!filePath || !fs.existsSync(filePath)) {
         console.error('File not found:', filePath);
         res.status(404).json({ success: false, message: 'File not found' });
-        return;
+        return
     }
 
     res.sendFile(path.resolve(filePath), (err) => {
         if (err) {
             console.error('Error sending file:', err.message);
-            res.status(500).json({ success: false, message: 'Error sending file' });
+            if (!res.headersSent) {  // Check if headers have already been sent
+                res.status(500).json({ success: false, message: 'Error sending file' });
+            }
         }
     });
 });

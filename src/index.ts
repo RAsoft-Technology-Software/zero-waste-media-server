@@ -1,33 +1,15 @@
 import express, { Request, Response, NextFunction } from 'express';
 import dotenv from 'dotenv';
-import helmet from 'helmet';
 import cors from 'cors';
-import rateLimit from 'express-rate-limit';
-import path from 'path';
 import mediaRoutes from './routes/mediRoutes';
-import { logger } from './utils/logger';
 
 // Load environment variables
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4004;
 const bodyLimit = process.env.MAX_FILE_SIZE || '25mb';
-const origin = process.env.ORIGIN?.split(',') || '*';
-
-// Rate Limiter
-/*const limiter = rateLimit({
-    windowMs: 1 * 60 * 1000, // 15 minutes
-    max: 1000, // Limit each IP to 100 requests
-    message: "Too many requests from this IP, please try again later.",
-    handler: (req, res, next, options) => {
-        logger.warn(`Rate limit exceeded for IP: ${req.ip}`);
-        res.status(options.statusCode).json({
-            message: options.message,
-            status: 'fail'
-        });
-    }
-});*/
+// const origin = process.env.ORIGIN?.split(',') || '*';
 
 // Middleware
 // app.use(limiter);
@@ -35,12 +17,19 @@ app.use(express.json({ limit: bodyLimit }));
 app.use(express.urlencoded({ extended: true, limit: bodyLimit }));
 // app.use(cors({ origin }));
 app.use(cors({
-    origin: '*',
+    origin: '*', // Allow all origins (for testing)
     methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Authorization', 'Content-Type']
-  }));
-  
-app.use(helmet());
+    allowedHeaders: ['Authorization', 'Content-Type'],
+    exposedHeaders: ['Content-Length'], // Allow the frontend to read headers
+}));
+
+// 🔥 **CSP Fix: Allow Image Loading From Backend**
+app.use(
+    (req, res, next) => {
+      res.setHeader("Content-Security-Policy", "default-src *; img-src * data: blob:;");
+      next();
+    }
+);
 
 // Routes
 app.use('/api/media', mediaRoutes);
@@ -50,7 +39,7 @@ app.get('/', (req, res) => {
     res.json({
         message: "Welcome to the Media Server API",
         description: "Handles media upload, processing, and management.",
-        version: "1.0.0"
+        version: "2.0.0"
     });
 });
 
@@ -58,16 +47,6 @@ app.get('/', (req, res) => {
 app.use((req, res) => {
     res.status(404).json({ success: false, message: 'API endpoint not found' });
 });
-
-// Global Error Handler
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    logger.error(`Unhandled error: ${err.message}`);
-  
-    res.status(500).json({
-      success: false,
-      message: err.message || 'Internal Server Error'
-    });
-  });
 
 app.listen(PORT, () => {
     console.log(`Media Server running on port ${PORT}`);
