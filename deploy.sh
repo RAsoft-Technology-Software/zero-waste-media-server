@@ -14,7 +14,7 @@ npm install
 
 # PM2 ile backend'i başlat
 echo "Backend PM2 ile başlatılıyor..."
-pm2 start dist/server.js --name media
+pm2 start dist/index.js --name media
 
 # PM2'nin arka planda çalışmasını sağla
 pm2 startup
