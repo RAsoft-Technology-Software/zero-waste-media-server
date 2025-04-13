@@ -12,6 +12,11 @@ git pull
 echo "Backend bağımlılıkları yükleniyor..."
 npm install
 
+# Projeyi build et
+echo "Web build ediliyor..."
+npm run build
+
+
 # PM2 ile backend'i başlat
 echo "Backend PM2 ile başlatılıyor..."
 pm2 start dist/index.js --name media
